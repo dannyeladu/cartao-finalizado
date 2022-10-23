@@ -9,14 +9,16 @@ function setCardType(type) {
   const colors = {
     visa: ["#436D99", "#2D57F2"],
     mastercard: ["#DF6F29", "#C69347"],
+    cielo: ["#9B2836"],
     default: ["black", "gray"],
   }
 
   ccBgColor01.setAttribute("fill", colors[type][0])
   ccBgColor02.setAttribute("fill", colors[type][1])
-  ccLogo.setAttribute("src", "cc-${type}.svg")
+  ccLogo.setAttribute("src", `cc-${type}.svg`)
 }
 
+setCardType("cielo")
 globalThis.setCardType = setCardType
 
 const securityCode = document.querySelector("#security-code")
@@ -58,6 +60,11 @@ const cardNumberPattern = {
     },
     {
       mask: "0000 0000 0000 0000",
+      regex: /^3(?:0([0-5]|9)|[689]\\d?)\\d{0,11}/,
+      cardtype: "cielo",
+    },
+    {
+      mask: "0000 0000 0000 0000",
       cardtype: "default",
     },
   ],
@@ -85,24 +92,27 @@ const cardHolder = document.querySelector("#card-holder")
 cardHolder.addEventListener("input", () => {
   const ccHolder = document.querySelector(".cc-holder .value")
 
-  ccHolder.innerText = cardHolder.value.length === 0 ? "FULANO DA SILVA" : cardHolder.value
+  ccHolder.innerText =
+    cardHolder.value.length === 0 ? "FULANO DA SILVA" : cardHolder.value
 })
 
 securityCodeMasked.on("accept", () => {
-  updateSecurityCode(securityCodeMasked.value);
+  updateSecurityCode(securityCodeMasked.value)
 })
 
-function updateSecurityCode(code){
+function updateSecurityCode(code) {
   const ccSecutiry = document.querySelector(".cc-security .value")
 
   ccSecutiry.innerText = code.length === 0 ? "123" : code
 }
 
 cardNumberMasked.on("accept", () => {
+  const cardType = cardNumberMasked.masked.currentMask.cardtype
+  setCardType(cardType)
   updateCardNumber(cardNumberMasked.value)
 })
 
-function updateCardNumber(number){
+function updateCardNumber(number) {
   const ccNumber = document.querySelector(".cc-number")
   ccNumber.innerText = number.length === 0 ? "1234 5678 9012 3456" : number
 }
@@ -111,7 +121,7 @@ expirationDateMasked.on("accept", () => {
   updateExpirationDate(expirationDateMasked.value)
 })
 
-function updateExpirationDate(date){
+function updateExpirationDate(date) {
   const ccExpiration = document.querySelector(".cc-extra .value")
   ccExpiration.innerText = date.length === 0 ? "02/32" : date
 }
