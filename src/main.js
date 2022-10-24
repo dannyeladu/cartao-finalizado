@@ -9,7 +9,8 @@ function setCardType(type) {
   const colors = {
     visa: ["#436D99", "#2D57F2"],
     mastercard: ["#DF6F29", "#C69347"],
-    cielo: ["#9B2836"],
+    cielo: ["#9B2836", "#40E181"],
+    nubank: ["#2D57F2", "#994343"],
     default: ["black", "gray"],
   }
 
@@ -18,7 +19,7 @@ function setCardType(type) {
   ccLogo.setAttribute("src", `cc-${type}.svg`)
 }
 
-setCardType("cielo")
+setCardType("nubank")
 globalThis.setCardType = setCardType
 
 const securityCode = document.querySelector("#security-code")
@@ -60,8 +61,13 @@ const cardNumberPattern = {
     },
     {
       mask: "0000 0000 0000 0000",
-      regex: /^3(?:0([0-5]|9)|[689]\\d?)\\d{0,11}/,
+      regex: /^8\d{0,15}/,
       cardtype: "cielo",
+    },
+    {
+      mask: "0000 0000 0000 0000",
+      regex: /^6\d{0,15}/,
+      cardtype: "nubank",
     },
     {
       mask: "0000 0000 0000 0000",
